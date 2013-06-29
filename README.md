@@ -18,11 +18,11 @@ There are a number of good reasons:
 * The CSS framework has a great grid system that beats the crap out of everything else I've used so far.
 * The JS framework has the sanest approach to modularity and auto-loading I've seen yet, and is completely self-contained.
 
-## Why KnockoutJS?
+## Why [KnockoutJS][ko]?
 
 * It's self-contained, stable and doesn't require me to suffer the pain of using `npm` to get things done.
 * It has simple, serviceable templating built-in (as well as the nicest implementation of the observer pattern I've seen so far).
-* Non-JS developers can customize views without hassles.
+* The declarative binding engine lets non-JS developers customize views without hassles.
 * Reinventing the wheel is stupid.
 
 ## Why all the Python bits?

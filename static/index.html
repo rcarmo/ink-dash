@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>{{title}}</title>
+        <link rel="stylesheet" href="css/ink.css">
+        <script src="js/ink-all.js"></script>
+        <script src="js/autoload.js"></script>
+    </head>
+    <body>
+        <p>First name: <strong data-bind="text: firstName"></strong></p>
+        <p>Last name:  <strong data-bind="text: lastName"></strong></p>
+        <p>Full name:  <strong data-bind="text: fullName"></strong></p>
+        <button data-bind="click: capitalizeLastName">Go caps</button>
+      <div class="debug"></div>
+      <script type="text/javascript">
+            Ink.setPath('Dash', '/js/Dash/');
+
+            Ink.requireModules(
+                ['Dash.Data.Binding_1'],
+                function(Binding) {
+                    // This is a simple *viewmodel* - JavaScript that defines the data and behavior of your UI
+                    var AppViewModel = function() {
+                        this.firstName = Binding.observable("Bert");
+
+                        this.lastName = Binding.observable("Bertington");
+
+                        this.fullName = Binding.computed(function() {
+                            return this.firstName() + " " + this.lastName();
+                        }, this);
+
+                        this.capitalizeLastName = function() {
+                            var currentVal = this.lastName();        // Read the current value
+                            this.lastName(currentVal.toUpperCase()); // Write back a modified value
+                        };
+                    }
+
+                    // Activates knockout.js
+                    Binding.applyBindings(new AppViewModel());
+                }
+            );
+      </script>
+  </body>
+</html>

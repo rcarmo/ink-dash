@@ -1,0 +1,41 @@
+{
+    "#": "Reload bottle if any Python modules change",
+    "reloader": true,
+    "#": "Enable bottle debugging",
+    "debug": true,
+    "#": "HTTP server settings",
+    "server": {
+        "http": {
+            "bind_address": "127.0.0.1",
+            "port": 8000
+        }
+    },
+    "#": "Python logging configuration",
+    "logging": {
+        "version": 1,
+        "formatters": {
+            "http": {
+                "format" : "localhost - - [%(asctime)s] %(process)d %(levelname)s %(message)s",
+                "datefmt": "%Y/%m/%d %H:%M:%S"
+            }
+        },
+        "handlers": {
+            "console": {
+                "class"    : "logging.StreamHandler",
+                "formatter": "http",
+                "level"    : "DEBUG",
+                "stream"   : "ext://sys.stdout"
+            }
+        },
+        "loggers": {
+            "bottle": {
+                "level"   : "DEBUG",
+                "handlers": ["console"]
+            }
+        },
+        "root": {
+            "level"   : "DEBUG",
+            "handlers": ["console"]
+        }
+    }
+}

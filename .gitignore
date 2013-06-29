@@ -1,3 +1,8 @@
+# HFS metadata
+.AppleDouble
+.DS_Store
+._.*
+
 *.py[cod]
 
 # C extensions
@@ -15,8 +20,6 @@ var
 sdist
 develop-eggs
 .installed.cfg
-lib
-lib64
 
 # Installer logs
 pip-log.txt

@@ -8,7 +8,7 @@ Ink.createModule(
     '1',                     // module version
     ['Ink.Net.Ajax_1'],      // array of dependency modules
     function(Ajax) {         // this fn will be called asynchronously with dependencies as arguments
-        'use strict';
+        
         /**
          * First attempt at binding Knockout to Ink
          *

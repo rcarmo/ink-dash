@@ -1,0 +1,27 @@
+{
+    "#": "widget definitions - order in array determines order in page",
+    "widgets": [
+        {   
+            "id"     : "my_counter",
+            "type"   : "counter",
+            "size"   : "large",
+            "title"  : "Widgets/s"
+        },
+        {   
+            "id"     : "my_grid",
+            "type"   : "grid"
+        },
+        {
+            "id"     : "my_bar_chart",
+            "type"   : "bar_chart",
+            "title"  : "Widget Production",
+            "options": {
+                "x-axis": {"display: none;"}
+            }
+        }
+    ],
+    "#": "URL with initialization data",
+    "init"  : "/events/snapshot",
+    "#": "EventSource url",
+    "events": "/events"
+}

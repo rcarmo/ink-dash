@@ -1,0 +1,28 @@
+{
+	"folders":
+	[
+		{
+			"path": "/Users/rcarmo/Dropbox/Development/github/ink-dash"
+		}
+	],
+    "settings":
+    {
+
+        "tab_size": 4,
+        "translate_tabs_to_spaces": true,
+        "use_tab_stops": true,
+        "indent_to_bracket": true,
+        "trim_automatic_white_space": true,
+        "python_package_paths": [
+            ".",
+            "lib"
+        ]
+    },
+    "build_systems":
+    [
+        {
+            "name": "Preview in Chrome",
+            "cmd": ["/usr/bin/open -a 'Google Chrome' http://localhost:8000"]
+        }
+    ]
+}

@@ -4,41 +4,59 @@
         <meta charset="utf-8">
         <title>{{title}}</title>
         <link rel="stylesheet" href="css/ink.css">
+        <link rel="stylesheet" href="css/dash.css">
         <script src="js/ink-all.js"></script>
         <script src="js/autoload.js"></script>
     </head>
     <body>
-        <p>First name: <strong data-bind="text: firstName"></strong></p>
-        <p>Last name:  <strong data-bind="text: lastName"></strong></p>
-        <p>Full name:  <strong data-bind="text: fullName"></strong></p>
-        <button data-bind="click: capitalizeLastName">Go caps</button>
-      <div class="debug"></div>
-      <script type="text/javascript">
-            Ink.setPath('Dash', '/js/Dash/');
 
-            Ink.requireModules(
-                ['Dash.Data.Binding_1'],
-                function(Binding) {
-                    // This is a simple *viewmodel* - JavaScript that defines the data and behavior of your UI
-                    var AppViewModel = function() {
-                        this.firstName = Binding.observable("Bert");
+    <div data-bind='DataGrid: GridModel'></div>
 
-                        this.lastName = Binding.observable("Bertington");
+    <table class="dash-template ink-table alternating bordered"  id="data-grid">
+        <thead>
+            <tr data-bind="foreach: columns">
+                <th data-bind="text: header"></th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: limit">
+            <tr data-bind="foreach: $parent.columns">
+               <td data-bind="text: typeof field == 'function' ? field($parent) : $parent[field]"></td>
+            </tr>
+        </tbody>
+    </table>
 
-                        this.fullName = Binding.computed(function() {
-                            return this.firstName() + " " + this.lastName();
-                        }, this);
+    <script type="text/javascript">
+        Ink.setPath('Dash', '/js/Dash/');
+        Ink.requireModules(
+            ['Dash.Routing.Router_1,Dash.Data.Grid_1','Dash.Data.Binding_1'],
+            function(Router, Grid, Binding) {
+                var initialData = [
+                    { name: "Well-Travelled Kitten", sales: 352, price: 75.95 },
+                    { name: "Speedy Coyote", sales: 89, price: 190.00 },
+                    { name: "Furious Lizard", sales: 152, price: 25.00 },
+                    { name: "Indifferent Monkey", sales: 1, price: 90.0 },
+                    { name: "Brooding Dragon", sales: 0, price: 6350 },
+                    { name: "Ingenious Tadpole", sales: 39450, price: 0.35 },
+                    { name: "Optimistic Snail", sales: 420, price: 1.50 }
+                ];
 
-                        this.capitalizeLastName = function() {
-                            var currentVal = this.lastName();        // Read the current value
-                            this.lastName(currentVal.toUpperCase()); // Write back a modified value
-                        };
-                    }
-
-                    // Activates knockout.js
-                    Binding.applyBindings(new AppViewModel());
+                var configuration = {
+                    template: 'data-grid',
+                    data: Binding.observableArray(initialData),
+                    columns: [
+                        { header: "Item Name", field: "name" },
+                        { header: "Sales Count", field: "sales" },
+                        { header: "Price", field: function (item) { return "$" + item.price.toFixed(2) } }
+                    ],
+                    limit: 4,
                 }
-            );
-      </script>
-  </body>
+
+                Binding.applyBindings(new Grid(configuration))
+            }
+        );
+    </script>
+
+
+
+    </body>
 </html>

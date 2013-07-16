@@ -1,104 +1,97 @@
 Ink.createModule(
-    'Dash.Data.Grid',         // full module name
+    'Dash.Data.Grid',        // full module name
     '1',                     // module version
-    ['Dash.Data.Binding_1'],  // array of dependency modules
-    function(Binding) {         // this fn will be called async with dependencies as arguments
+    ['Ink.Dom.Element_1', 'Ink.Dom.Selector_1', 'Ink.Net.Ajax_1', 'Dash.Data.Binding_1'],  // array of dependency modules
+    function(Element, Selector, Ajax, Binding) {         // this fn will be called async with dependencies as arguments
         'use strict';
 
-        var _getColumnsForScaffolding = function(data) {
+        var _getColumns = function(data) {
             if ((typeof data.length !== 'number') || data.length === 0) {
                 return [];
             }
             var columns = [];
-            for (var propertyName in data[0]) {
-                columns.push({ headerText: propertyName, rowText: propertyName });
+            for (var name in data[0]) {
+                columns.push({ header: name, row: name });
             }
             return columns;
         };
 
 
-        // Templates used to render the grid
-        var templateEngine = new Binding.nativeTemplateEngine();
+        Binding.DataGrid = {
+            // Defines a view model class you can use to populate a grid
 
-        templateEngine.addTemplate = function(templateName, templateMarkup) {
-            document.write("<script type='text/html' id='" + templateName + "'>" + templateMarkup + "<" + "/script>");
+            self: this,
+
+            template: null,
+
+            viewModel: function(configuration) {
+                console.log("--> viewModel");
+                this.data = configuration.data;
+                this.page = Binding.observable(0);
+                this.limit = configuration.limit || 5;
+
+                // If no columns are specified, we'll use introspection to label them
+                this.columns = configuration.columns || _getColumns(Binding.utils.unwrapObservable(this.data));
+
+                this.found = Binding.computed(function () {
+                    var offset = this.limit * this.page();
+                    return this.data.slice(offset, offset + this.limit);
+                }, this);
+
+                this.bound = Binding.computed(function () {
+                    return Math.ceil(Binding.utils.unwrapObservable(this.data).length / this.limit) - 1;
+                }, this);
+                console.log("<-- viewModel");
+            }
         };
 
 
-        templateEngine.addTemplate("ink_simpleGrid_grid", "\
-            <table class=\"ink-grid\" cellspacing=\"0\">\
-                <thead>\
-                    <tr data-bind=\"foreach: columns\">\
-                       <th data-bind=\"text: headerText\"></th>\
-                    </tr>\
-                </thead>\
-                <tbody data-bind=\"foreach: itemsOnCurrentPage\">\
-                   <tr data-bind=\"foreach: $parent.columns\">\
-                       <td data-bind=\"text: typeof rowText == 'function' ? rowText($parent) : $parent[rowText] \"></td>\
-                    </tr>\
-                </tbody>\
-            </table>");
+        Binding.bindingHandlers.DataGrid = {
+            self: this,
 
-
-        templateEngine.addTemplate("ink_simpleGrid_pageLinks", "\
-            <div class=\"ink-grid-pageLinks\">\
-                <span>Page:</span>\
-                <!-- ko foreach: ko.utils.range(0, maxPageIndex) -->\
-                       <a href=\"#\" data-bind=\"text: $data + 1, click: function() { $root.currentPageIndex($data) }, css: { selected: $data == $root.currentPageIndex() }\">\
-                    </a>\
-                <!-- /ko -->\
-            </div>");
-
-
-        Binding.bindingHandlers.simpleGrid = {
             init: function() {
+                console.log("--> init")
+                self.engine = new Binding.nativeTemplateEngine();
+                
                 return { 'controlsDescendantBindings': true };
             },
 
             // This method is called to initialize the node, and will also be called again if you change what the grid is bound to
-            update: function (element, viewModelAccessor, allBindingsAccessor) {
-                var viewModel = viewModelAccessor(), allBindings = allBindingsAccessor();
+            update: function (container, modelAccessor, bindingsAccessor) {
+                console.log("--> update");
+
+                var model = modelAccessor(), bindings = bindingsAccessor();
+
+                console.log("container : " + container);
+                console.log("model     : " + model);
+                console.log("bindings  : " + bindings);
 
                 // Empty the element
-                while(element.firstChild)
-                    ko.removeNode(element.firstChild);
+                while(container.firstChild)
+                    Binding.removeNode(container.firstChild);
 
-                // Allow the default templates to be overridden
-                var gridTemplateName      = allBindings.simpleGridTemplate || "dash_simpleGrid_grid",
-                    pageLinksTemplateName = allBindings.simpleGridPagerTemplate || "dash_simpleGrid_pageLinks";
+                var gridTemplate       = self.template,
+                    paginationTemplate = bindings.template + '-pagination';
 
                 // Render the main grid
-                var gridContainer = element.appendChild(document.createElement("DIV"));
-                Binding.renderTemplate(gridTemplateName, viewModel, { templateEngine: templateEngine }, gridContainer, "replaceNode");
+                var subcontainer = container.appendChild(document.createElement("DIV"));
+                Binding.renderTemplate('data-grid', model, { templateEngine: self.engine }, subcontainer, "replaceNode");
 
                 // Render the page links
-                var pageLinksContainer = element.appendChild(document.createElement("DIV"));
-                Binding.renderTemplate(pageLinksTemplateName, viewModel, { templateEngine: templateEngine }, pageLinksContainer, "replaceNode");
+                //var subcontainer = container.appendChild(document.createElement("DIV"));
+                //Binding.renderTemplate(paginationTemplate, model, { templateEngine: self.engine }, subcontainer, "replaceNode");
+                console.log("<-- update");
             }
         };
 
+           
 
-        Binding.Grid = {
-            // Defines a view model class you can use to populate a grid
-            viewModel: function (configuration) {
-                this.data = configuration.data;
-                this.currentPageIndex = Binding.observable(0);
-                this.pageSize = configuration.pageSize || 5;
+        var Grid = function(configuration) {
+            console.log("--> Grid")
+            this.GridModel = Binding.DataGrid.viewModel(configuration);
+            console.log("<-- Grid")
+        }
 
-                // If you don't specify columns configuration, we'll use scaffolding
-                this.columns = configuration.columns || _getColumnsForScaffolding(Binding.utils.unwrapObservable(this.data));
-
-                this.itemsOnCurrentPage = Binding.computed(function () {
-                    var startIndex = this.pageSize * this.currentPageIndex();
-                    return this.data.slice(startIndex, startIndex + this.pageSize);
-                }, this);
-
-                this.maxPageIndex = Binding.computed(function () {
-                    return Math.ceil(Binding.utils.unwrapObservable(this.data).length / this.pageSize) - 1;
-                }, this);
-            }
-        };
-
-        return Binding.Grid;
+        return Grid;
     }
 );

@@ -10,21 +10,6 @@
     </head>
     <body>
 
-    <div data-bind='DataGrid: GridModel'></div>
-
-    <table class="dash-template ink-table alternating bordered"  id="data-grid">
-        <thead>
-            <tr data-bind="foreach: columns">
-                <th data-bind="text: header"></th>
-            </tr>
-        </thead>
-        <tbody data-bind="foreach: limit">
-            <tr data-bind="foreach: $parent.columns">
-               <td data-bind="text: typeof field == 'function' ? field($parent) : $parent[field]"></td>
-            </tr>
-        </tbody>
-    </table>
-
     <script type="text/javascript">
         Ink.setPath('Dash', '/js/Dash/');
         Ink.requireModules(

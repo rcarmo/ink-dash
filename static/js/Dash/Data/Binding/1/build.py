@@ -1,10 +1,10 @@
 import os, sys, urllib2
 
 if 'BUILD_RELEASE' in os.environ:
-    ko = "http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.2.1.js"
+    ko = "http://knockoutjs.com/downloads/knockout-2.3.0.js"
     strict = "'use strict;'"
 else:
-    ko = "http://knockoutjs.com/downloads/knockout-2.2.1.debug.js"
+    ko = "http://knockoutjs.com/downloads/knockout-2.3.0.debug.js"
     strict = ''
 
 prefix = """/**

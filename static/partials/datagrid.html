@@ -1,0 +1,23 @@
+<script type="text/html" id="data-grid">
+    <table class="dash-template ink-table alternating bordered">
+        <thead>
+            <tr data-bind="foreach: columns">
+                <th data-bind="text: header"></th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: limit">
+            <tr data-bind="foreach: $parent.columns">
+               <td data-bind="text: typeof field == 'function' ? field($parent) : $parent[field]"></td>
+            </tr>
+        </tbody>
+    </table>
+</script>
+
+
+    <nav class="dash-template ink-navigation" id="data-grid-pagination">
+        <ul class="pagination">
+            <!-- ko foreach: ko.utils.range(0, bound) -->
+            <li><a href="#" data-bind="text: $data + 1, click: function() { page($data) }, css: { selected: $data == page() }"></a></li>
+            <!-- /ko -->
+        </ul>
+    </nav>
